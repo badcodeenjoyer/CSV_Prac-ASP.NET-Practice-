@@ -1,29 +1,22 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
+﻿
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using CSVApp.Data;
 using CSVApp.Models;
 using System.Data;
-using System.Globalization;
-using System.IO;
-using System.Web;
-using Microsoft.AspNetCore.Hosting;
-using CsvHelper;
-using CsvHelper.Configuration;
+using CSVApp.Interfaces;
 
 namespace CSVApp.Controllers
 {
     public class CSVModelsController : Controller
     {
         private readonly CSVAppContext _context;
+        private readonly IRead _readService;
 
-        public CSVModelsController(CSVAppContext context)
+        public CSVModelsController(CSVAppContext context , IRead readService)
         {
             _context = context;
+            _readService=readService;
         }
 
 
@@ -176,45 +169,14 @@ namespace CSVApp.Controllers
                         fileStream.Flush();
                     }
                     
-                    var models = Read_CSV(fileName);
+                    var models = _readService.Read_CSV(fileName);
                     
                     _context.CSVModel.AddRange(models);
                     _context.SaveChanges();
 
                     return CSVView(models);      
         }
-        private List<CSVModel> Read_CSV(string fileName)
-        {
-            var path = $"{Directory.GetCurrentDirectory()}{@"\wwwroot\files"}"+"\\"+ fileName;
-            var models = new List<CSVModel>();
-            using (var reader = new StreamReader(fileName)) 
-            using (var csv = new CsvReader(reader, CultureInfo.InvariantCulture))
-            {
-                csv.Context.RegisterClassMap<FooMap>();
-                csv.Read();
-                csv.ReadHeader();
-                while (csv.Read())
-                {
-
-                    var model = csv.GetRecord<CSVModel>();
-                    
-                    models.Add(model);
-                }
-            }
-            
-            return models;
-
-
-
-        }
+        
     }
-    public class FooMap : ClassMap<CSVModel>
-    {
-        public FooMap()
-        {
-
-            AutoMap(CultureInfo.InvariantCulture);
-            Map(m => m.Id).Ignore();
-        }
-    }
+    
 }

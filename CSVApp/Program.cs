@@ -1,6 +1,9 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 using CSVApp.Data;
+using CSVApp.Services;
+using CSVApp.Interfaces;
+
 var builder = WebApplication.CreateBuilder(args);
 
 builder.Services.AddDbContext<CSVAppContext>(options =>
@@ -8,6 +11,7 @@ builder.Services.AddDbContext<CSVAppContext>(options =>
 
 // Add services to the container.
 builder.Services.AddControllersWithViews();
+builder.Services.AddTransient<IRead, Read_CSVService>();
 
 var app = builder.Build();
 
