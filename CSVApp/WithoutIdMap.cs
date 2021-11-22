@@ -4,9 +4,9 @@ using System.Globalization;
 
 namespace CSVApp
 {
-    public class FooMap : ClassMap<CSVModel>
+    public class WithoutIdMap : ClassMap<CSVModel>
     {
-        public FooMap()
+        public WithoutIdMap()
         {
 
             AutoMap(CultureInfo.InvariantCulture);

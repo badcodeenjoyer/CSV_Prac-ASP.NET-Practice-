@@ -14,7 +14,7 @@ namespace CSVApp.Services
             using (var reader = new StreamReader(fileName))
             using (var csv = new CsvReader(reader, CultureInfo.InvariantCulture))
             {
-                csv.Context.RegisterClassMap<FooMap>();
+                csv.Context.RegisterClassMap<WithoutIdMap>();
                 csv.Read();
                 csv.ReadHeader();
                 while (csv.Read())
